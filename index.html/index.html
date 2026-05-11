@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slorpzz | Links</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    overflow: hidden;
+    color: #f5d06f;
+    cursor: none;
+}
+
+/* Cursor */
+.cursor {
+    position: fixed;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #f5d06f;
+    box-shadow: 0 0 20px #f5d06f;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+/* Canvas layers */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -2;
+}
+
+/* Main UI */
+.container {
+    position: relative;
+    z-index: 2;
+    width: 90%;
+    max-width: 420px;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+h1 {
+    font-size: 48px;
+    text-shadow: 0 0 25px #f5d06f;
+    letter-spacing: 3px;
+}
+
+p {
+    opacity: 0.7;
+}
+
+.link-btn {
+    display: block;
+    background: rgba(17,17,17,0.85);
+    color: #f5d06f;
+    text-decoration: none;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 12px;
+    border: 1px solid #f5d06f;
+    transition: 0.25s;
+    font-weight: bold;
+}
+
+.link-btn:hover {
+    background: #f5d06f;
+    color: black;
+    transform: scale(1.05);
+}
+
+/* Buttons */
+.small-btn {
+    margin: 8px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #f5d06f;
+    background: black;
+    color: #f5d06f;
+    cursor: pointer;
+}
+iframe {
+    margin-top: 10px;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<canvas id="bg"></canvas>
+<canvas id="rain"></canvas>
+<canvas id="particles"></canvas>
+
+<div class="container">
+    <h1>Slorpzz</h1>
+    <p>My Socials</p>
+
+    <a class="link-btn" href="https://www.tiktok.com/@slorpzz" target="_blank">TikTok</a>
+    <a class="link-btn" href="https://www.youtube.com/@Slorpzzz" target="_blank">YouTube</a>
+    <a class="link-btn" href="https://discord.com/users/slorpzz1" target="_blank">Discord: slorpzz1</a>
+
+    <a class="link-btn">Minecraft: Slorpzz</a>
+    <a class="link-btn">Roblox: HasitatJR</a>
+
+    <a class="link-btn" href="https://fortnitetracker.com/profile/all/Slorpzz" target="_blank">Fortnite Tracker</a>
+
+    <!-- Music -->
+    <iframe style="width:100%; height:80px;" 
+        src="https://open.spotify.com/embed/track/4example"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+    </iframe>
+
+    <button class="small-btn" onclick="toggleThunder()">⚡ Thunder Sound</button>
+</div>
+
+<audio id="thunder" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8b2d0a0f7.mp3?filename=thunder-ambient-110193.mp3"></audio>
+
+<script>
+/* Cursor */
+const cursor = document.getElementById("cursor");
+document.addEventListener("mousemove", e => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+});
+
+/* Thunder */
+let thunderOn = false;
+function toggleThunder() {
+    thunderOn = !thunderOn;
+    const audio = document.getElementById("thunder");
+    if (thunderOn) audio.play();
+    else audio.pause();
+}
+
+/* Lightning */
+const bg = document.getElementById("bg");
+const bctx = bg.getContext("2d");
+
+bg.width = window.innerWidth;
+bg.height = window.innerHeight;
+
+function lightning() {
+    bctx.clearRect(0,0,bg.width,bg.height);
+
+    let x = Math.random() * bg.width;
+    let y = 0;
+
+    bctx.beginPath();
+    bctx.moveTo(x,y);
+
+    for (let i=0;i<12;i++){
+        x += (Math.random()-0.5)*90;
+        y += bg.height/12;
+        bctx.lineTo(x,y);
+    }
+
+    bctx.strokeStyle="#f5d06f";
+    bctx.shadowBlur=25;
+    bctx.shadowColor="#f5d06f";
+    bctx.stroke();
+}
+setInterval(lightning, 1400);
+
+/* Rain */
+const rain = document.getElementById("rain");
+const rctx = rain.getContext("2d");
+rain.width = window.innerWidth;
+rain.height = window.innerHeight;
+
+let drops = Array(120).fill().map(()=>({
+    x: Math.random()*rain.width,
+    y: Math.random()*rain.height,
+    l: Math.random()*15
+}));
+
+function drawRain(){
+    rctx.clearRect(0,0,rain.width,rain.height);
+    rctx.strokeStyle="rgba(255,255,255,0.2)";
+    for(let d of drops){
+        rctx.beginPath();
+        rctx.moveTo(d.x,d.y);
+        rctx.lineTo(d.x,d.y+d.l);
+        rctx.stroke();
+
+        d.y += 6;
+        if(d.y > rain.height){
+            d.y = 0;
+            d.x = Math.random()*rain.width;
+        }
+    }
+}
+setInterval(drawRain, 30);
+
+/* Particles */
+const p = document.getElementById("particles");
+const pctx = p.getContext("2d");
+p.width = window.innerWidth;
+p.height = window.innerHeight;
+
+let particles = Array(60).fill().map(()=>({
+    x: Math.random()*p.width,
+    y: Math.random()*p.height,
+    r: Math.random()*2
+}));
+
+function drawParticles(){
+    pctx.clearRect(0,0,p.width,p.height);
+    pctx.fillStyle="#f5d06f";
+
+    for(let pt of particles){
+        pctx.beginPath();
+        pctx.arc(pt.x,pt.y,pt.r,0,Math.PI*2);
+        pctx.fill();
+
+        pt.y -= 0.3;
+        if(pt.y < 0) pt.y = p.height;
+    }
+}
+setInterval(drawParticles, 30);
+</script>
+
+</body>
+</html>
